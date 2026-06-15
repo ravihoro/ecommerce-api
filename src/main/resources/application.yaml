@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/ecommerce
+    username: postgres
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+  server:
+    port: 8080
+
+  application:
+    name: ecommerce-api
