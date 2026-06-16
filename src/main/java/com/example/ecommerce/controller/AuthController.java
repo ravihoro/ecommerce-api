@@ -1,15 +1,10 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.dto.LoginRequest;
-import com.example.ecommerce.dto.LoginResponse;
-import com.example.ecommerce.dto.RefreshTokenRequest;
-import com.example.ecommerce.dto.RefreshTokenResponse;
+import com.example.ecommerce.dto.*;
+import com.example.ecommerce.service.AuthService;
 import com.example.ecommerce.service.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -17,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final JwtService jwtService;
+    private final AuthService authService;
 
     @PostMapping("/login")
     public LoginResponse login(
@@ -46,6 +42,14 @@ public class AuthController {
         String newAccessToken = jwtService.generateAccessToken(username);
 
         return new RefreshTokenResponse(newAccessToken);
+    }
+
+    @GetMapping("/me")
+    public UserResponse me(
+            @RequestHeader("Authorization")
+            String authHeader
+    ){
+        return authService.getCurrentUser(authHeader);
     }
 
 }

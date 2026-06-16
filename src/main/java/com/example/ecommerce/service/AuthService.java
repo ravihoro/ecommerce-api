@@ -2,6 +2,7 @@ package com.example.ecommerce.service;
 
 import com.example.ecommerce.dto.LoginRequest;
 import com.example.ecommerce.dto.LoginResponse;
+import com.example.ecommerce.dto.UserResponse;
 import com.example.ecommerce.entity.RefreshToken;
 import com.example.ecommerce.entity.User;
 import com.example.ecommerce.repository.RefreshTokenRepository;
@@ -52,6 +53,27 @@ public class AuthService {
         refreshTokenRepository.save(token);
 
         return new LoginResponse(accessToken, refreshToken);
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse getCurrentUser(
+            String authHeader
+    ){
+        String token = authHeader.replace("Bearer ", "");
+
+        String username = jwtService.extractUsername(
+                token
+        );
+
+        User user = userRepository.findByUsername(username).orElseThrow();
+
+        return new UserResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName()
+        );
     }
 
 }
