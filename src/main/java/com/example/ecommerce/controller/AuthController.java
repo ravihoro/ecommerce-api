@@ -18,13 +18,7 @@ public class AuthController {
     public LoginResponse login(
             @RequestBody LoginRequest request
     ) {
-        String accessToken = jwtService.generateAccessToken(request.username());
-        String refreshToken = jwtService.generateRefreshToken(request.username());
-
-        return new LoginResponse(
-                accessToken,
-                refreshToken
-        );
+        return authService.login(request);
     }
 
     @PostMapping("/refresh")

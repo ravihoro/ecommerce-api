@@ -52,7 +52,7 @@ public class AuthService {
 
         refreshTokenRepository.save(token);
 
-        return new LoginResponse(accessToken, refreshToken);
+        return new LoginResponse(user.getId(), user.getUsername(), user.getEmail(), user.getFirstName(), user.getLastName(), accessToken, refreshToken);
     }
 
     @Transactional(readOnly = true)

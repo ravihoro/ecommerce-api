@@ -11,7 +11,7 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private static final String SECRET = "secrey-key";
+    private static final String SECRET = "my-super-secret-key-for-ecommerce-app-2026";
 
     private SecretKey getKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));

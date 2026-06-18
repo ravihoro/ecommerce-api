@@ -59,7 +59,8 @@ public class ProductService {
                         review.getRating(),
                         review.getComment(),
                         review.getReviewerEmail(),
-                        review.getReviewerName()
+                        review.getReviewerName(),
+                        review.getReviewDate()
                 )).toList()
         );
 
@@ -83,7 +84,8 @@ public class ProductService {
                                 product.getDiscountPercentage(),
                                 product.getRating(),
                                 product.getBrand(),
-                                product.getThumbnail()
+                                product.getThumbnail(),
+                                product.getCategory().getName()
                         ))
                         .toList(),
                 products.getTotalElements(),

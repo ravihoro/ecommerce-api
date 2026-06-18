@@ -9,6 +9,7 @@ public record ProductResponse(
         BigDecimal discountPercentage,
         BigDecimal rating,
         String brand,
-        String thumbnail
+        String thumbnail,
+        String category
 ) {
 }
