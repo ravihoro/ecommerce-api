@@ -38,7 +38,9 @@ public record ProductDetailResponse(
 
         List<String> images,
 
-        List<ReviewResponse> reviews
+        List<ReviewResponse> reviews,
+
+        boolean isFavorite
 
 ) {
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +57,7 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponse getCurrentUser(
+    public UserResponse getCurrentUserResponse(
             String authHeader
     ){
         String token = authHeader.replace("Bearer ", "");
@@ -74,6 +75,36 @@ public class AuthService {
                 user.getFirstName(),
                 user.getLastName()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public User requireCurrentUser(
+            String authHeader
+    ){
+        String token = authHeader.replace("Bearer ", "");
+
+        String username = jwtService.extractUsername(token);
+
+        return userRepository.findByUsername(username)
+                .orElseThrow();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<User> getCurrentUser(
+            String authHeader
+    ) {
+
+        if (authHeader == null ||
+                !authHeader.startsWith("Bearer ")) {
+
+            return Optional.empty();
+        }
+
+        String token = authHeader.replace("Bearer ", "");
+
+        String username = jwtService.extractUsername(token);
+
+        return userRepository.findByUsername(username);
     }
 
 }

@@ -10,6 +10,7 @@ public record ProductResponse(
         BigDecimal rating,
         String brand,
         String thumbnail,
-        String category
+        String category,
+        boolean isFavorite
 ) {
 }

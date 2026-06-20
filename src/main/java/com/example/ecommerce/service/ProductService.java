@@ -7,6 +7,9 @@ import com.example.ecommerce.dto.ProductResponse;
 import com.example.ecommerce.dto.ReviewResponse;
 import com.example.ecommerce.entity.Product;
 import com.example.ecommerce.entity.ProductImage;
+import com.example.ecommerce.entity.User;
+import com.example.ecommerce.mapper.ProductMapper;
+import com.example.ecommerce.repository.FavoriteRepository;
 import com.example.ecommerce.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,7 +18,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+
 
 @Service
 @RequiredArgsConstructor
@@ -23,76 +29,79 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    @Transactional(readOnly = true)
-    public ProductDetailResponse getProduct(Long id) {
+    private final AuthService authService;
 
-        Product product = productRepository.findDetailById(id).orElseThrow();
+    private final FavoriteRepository favoriteRepository;
+    private final ProductMapper productMapper;
+
+    @Transactional(readOnly = true)
+    public ProductDetailResponse getProduct(
+            String authHeader,
+            Long id
+    ) {
+
+        Product product = productRepository
+                .findDetailById(id)
+                .orElseThrow();
 
         product.getImages().size();
         product.getReviews().size();
 
-        return new ProductDetailResponse(
-                product.getId(),
-                product.getTitle(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getDiscountPercentage(),
-                product.getRating(),
-                product.getStock(),
-                product.getBrand(),
-                product.getSku(),
-                product.getWeight(),
-                product.getWidth(),
-                product.getHeight(),
-                product.getDepth(),
-                product.getWarrantyInformation(),
-                product.getShippingInformation(),
-                product.getAvailabilityStatus(),
-                product.getReturnPolicy(),
-                product.getMinimumOrderQuantity(),
-                product.getBarcode(),
-                product.getQrCode(),
-                product.getCategory().getSlug(),
-                product.getThumbnail(),
-                product.getImages().stream().map(ProductImage::getImageUrl).toList(),
-                product.getReviews().stream().map(review -> new ReviewResponse(
-                        review.getRating(),
-                        review.getComment(),
-                        review.getReviewerEmail(),
-                        review.getReviewerName(),
-                        review.getReviewDate()
-                )).toList()
+        boolean isFavorite =
+                getFavoriteProductIds(authHeader)
+                        .contains(product.getId());
+
+
+        return productMapper.toDetailResponse(
+            product, isFavorite
         );
 
     }
 
 
-    public ProductPageResponse getProductsByCategory(String slug, int limit, int skip){
+    public ProductPageResponse getProductsByCategory(String authHeader, String slug, int limit, int skip){
 
         int page = skip / limit;
 
-        Pageable pageable =  PageRequest.of(page, limit);
+        Pageable pageable = PageRequest.of(page, limit);
 
-        Page<Product> products = productRepository.findByCategorySlug(slug, pageable);
+        Page<Product> products =
+                productRepository.findByCategorySlug(
+                        slug,
+                        pageable
+                );
+
+        Set<Long> favoriteIds =
+                getFavoriteProductIds(authHeader);
 
         return new ProductPageResponse(
+
                 products.stream()
-                        .map(product -> new ProductResponse(
-                                product.getId(),
-                                product.getTitle(),
-                                product.getPrice(),
-                                product.getDiscountPercentage(),
-                                product.getRating(),
-                                product.getBrand(),
-                                product.getThumbnail(),
-                                product.getCategory().getName()
-                        ))
+                        .map(product ->
+                                productMapper.toProductResponse(
+                                        product,
+                                        favoriteIds.contains(
+                                                product.getId()
+                                        )
+                                )
+                        )
                         .toList(),
+
                 products.getTotalElements(),
+
                 skip,
+
                 limit
         );
     }
 
+    private Set<Long> getFavoriteProductIds(
+            String authHeader
+    ) {
 
+        return authService.getCurrentUser(authHeader)
+                .map(favoriteRepository::findProductIdsByUser)
+                .orElse(Collections.emptySet());
+
+    }
 }
