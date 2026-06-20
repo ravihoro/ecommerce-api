@@ -74,4 +74,7 @@ public class Product {
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<Review> reviews;
 
+    @OneToMany(mappedBy = "product")
+    private List<CartItem> cartItems;
+
 }

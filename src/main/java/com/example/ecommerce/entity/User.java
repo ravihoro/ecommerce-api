@@ -26,4 +26,7 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
+    @OneToOne(mappedBy = "user")
+    private Cart cart;
+
 }
