@@ -43,7 +43,7 @@ public class AuthController {
             @RequestHeader("Authorization")
             String authHeader
     ){
-        return authService.getCurrentUser(authHeader);
+        return authService.getCurrentUserResponse(authHeader);
     }
 
 }

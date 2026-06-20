@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -103,5 +104,28 @@ public class ProductService {
                 .map(favoriteRepository::findProductIdsByUser)
                 .orElse(Collections.emptySet());
 
+    }
+
+    @Transactional(readOnly = true)
+    public ProductPageResponse searchProducts(
+            String authHeader,
+            String query,
+            int limit,
+            int skip
+    ){
+        Pageable pageable = PageRequest.of(skip/limit, limit);
+
+        Page<Product> products = productRepository.searchProducts(query, pageable);
+
+        Set<Long> favoriteIds = getFavoriteProductIds(authHeader);
+
+        List<ProductResponse> productResponses = products.getContent().stream()
+                .map(product ->
+                    productMapper.toProductResponse(
+                            product,
+                            favoriteIds.contains(product.getId()))
+                ).toList();
+
+        return new ProductPageResponse(productResponses, products.getTotalElements(), skip, limit);
     }
 }

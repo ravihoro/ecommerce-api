@@ -41,4 +41,21 @@ public class ProductController {
         return productService.getProductsByCategory(authHeader, slug, limit, skip);
     }
 
+    @GetMapping("/search")
+    public ProductPageResponse searchProducts(
+            @RequestHeader(value = "authorization", required = false)
+            String authHeader,
+
+            @RequestParam("q")
+            String query,
+
+            @RequestParam(defaultValue = "20")
+            int limit,
+
+            @RequestParam(defaultValue = "0")
+            int skip
+    ){
+        return productService.searchProducts(authHeader, query, limit, skip);
+    }
+
 }
