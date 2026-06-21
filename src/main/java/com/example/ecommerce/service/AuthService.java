@@ -8,9 +8,11 @@ import com.example.ecommerce.entity.User;
 import com.example.ecommerce.repository.RefreshTokenRepository;
 import com.example.ecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -81,12 +83,22 @@ public class AuthService {
     public User requireCurrentUser(
             String authHeader
     ){
-        String token = authHeader.replace("Bearer ", "");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Missing or invalid Authorization header"
+            );
+        }
+
+        String token = authHeader.substring(7);
 
         String username = jwtService.extractUsername(token);
 
         return userRepository.findByUsername(username)
-                .orElseThrow();
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED,
+                        "User not found"
+                ));
     }
 
     @Transactional(readOnly = true)

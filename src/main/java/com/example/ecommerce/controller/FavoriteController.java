@@ -44,7 +44,7 @@ public class FavoriteController {
             @RequestHeader("Authorization")
             String authHeader,
 
-            @RequestParam(defaultValue = "20")
+            @RequestParam(defaultValue = "6")
             int limit,
 
             @RequestParam(defaultValue = "0")

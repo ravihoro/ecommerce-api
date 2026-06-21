@@ -68,14 +68,11 @@ public class FavoriteService {
             int limit,
             int skip
     ){
-        String token = authHeader.replace("Bearer ", "");
-        String username = jwtService.extractUsername(token);
-
-        User user = userRepository.findByUsername(username).orElseThrow();
+        User user = authService.requireCurrentUser(authHeader);
 
         Pageable pageable = PageRequest.of(skip/limit, limit);
 
-        Page<Favorite> favoritePage = favoriteRepository.findByUser(user, pageable);
+        Page<Favorite> favoritePage = favoriteRepository.findByUserOrderByCreatedAtDesc(user, pageable);
 
         List<ProductResponse> favorites = favoritePage.getContent().stream().map(Favorite::getProduct).map(product -> productMapper.toProductResponse(product, true)).toList();
 

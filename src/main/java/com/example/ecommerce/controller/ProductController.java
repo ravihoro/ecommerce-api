@@ -35,7 +35,7 @@ public class ProductController {
             String authHeader,
 
             @PathVariable String slug,
-            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "6") int limit,
             @RequestParam(defaultValue = "0") int skip
     ){
         return productService.getProductsByCategory(authHeader, slug, limit, skip);
@@ -49,7 +49,7 @@ public class ProductController {
             @RequestParam("q")
             String query,
 
-            @RequestParam(defaultValue = "20")
+            @RequestParam(defaultValue = "6")
             int limit,
 
             @RequestParam(defaultValue = "0")

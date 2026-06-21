@@ -18,7 +18,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     void deleteByUserAndProduct(User user, Product product);
 
-    Page<Favorite> findByUser(User user, Pageable pageable);
+    Page<Favorite> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
 
     @Query("""
             SELECT f.product.id
