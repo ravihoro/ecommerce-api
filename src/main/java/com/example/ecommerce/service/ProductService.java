@@ -72,7 +72,7 @@ public class ProductService {
                         pageable
                 );
 
-        Set<Long> favoriteIds =
+        Set<Integer> favoriteIds =
                 getFavoriteProductIds(authHeader);
 
         return new ProductPageResponse(
@@ -96,7 +96,7 @@ public class ProductService {
         );
     }
 
-    private Set<Long> getFavoriteProductIds(
+    private Set<Integer> getFavoriteProductIds(
             String authHeader
     ) {
 
@@ -117,7 +117,7 @@ public class ProductService {
 
         Page<Product> products = productRepository.searchProducts(query, pageable);
 
-        Set<Long> favoriteIds = getFavoriteProductIds(authHeader);
+        Set<Integer> favoriteIds = getFavoriteProductIds(authHeader);
 
         List<ProductResponse> productResponses = products.getContent().stream()
                 .map(product ->

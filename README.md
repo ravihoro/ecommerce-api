@@ -106,7 +106,7 @@ DELETE /favorites/{productId}
 The application will be available at:
 
 ```
-http://localhost:8080
+http://localhost:8081
 ```
 
 ## Future Improvements

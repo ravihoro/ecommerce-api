@@ -1,5 +1,6 @@
 package com.example.ecommerce.service;
 
+import com.example.ecommerce.dto.FavoriteIdsResponse;
 import com.example.ecommerce.dto.ProductPageResponse;
 import com.example.ecommerce.dto.ProductResponse;
 import com.example.ecommerce.entity.Favorite;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -96,7 +98,20 @@ public class FavoriteService {
 
         favoriteRepository.deleteByUserAndProduct(user, product);
 
-        return false;
+        return true;
+    }
+
+    @Transactional(readOnly = true)
+    public FavoriteIdsResponse getFavoriteIds(
+            String authHeader
+    ) {
+
+        User user = authService.requireCurrentUser(authHeader);
+
+        Set<Integer> ids = favoriteRepository.findProductIdsByUser(user);
+
+        return new FavoriteIdsResponse(ids);
+
     }
 
 }

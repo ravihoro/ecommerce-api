@@ -21,8 +21,7 @@ public class ProductMapper {
                 product.getRating(),
                 product.getBrand(),
                 product.getThumbnail(),
-                product.getCategory().getSlug(),
-                isFavorite
+                product.getCategory().getSlug()
         );
     }
 
@@ -99,9 +98,8 @@ public class ProductMapper {
                                         review.getReviewDate()
                                 )
                         )
-                        .toList(),
+                        .toList()
 
-                isFavorite
         );
     }
 }

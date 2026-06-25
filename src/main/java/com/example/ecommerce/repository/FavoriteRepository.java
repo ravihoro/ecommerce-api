@@ -25,6 +25,6 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
             FROM Favorite f
             WHERE f.user = :user
             """)
-    Set<Long> findProductIdsByUser(User user);
+    Set<Integer> findProductIdsByUser(User user);
 
 }

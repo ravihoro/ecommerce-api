@@ -1,5 +1,6 @@
 package com.example.ecommerce.controller;
 
+import com.example.ecommerce.dto.FavoriteIdsResponse;
 import com.example.ecommerce.dto.ProductPageResponse;
 import com.example.ecommerce.service.FavoriteService;
 import lombok.RequiredArgsConstructor;
@@ -56,5 +57,13 @@ public class FavoriteController {
                 limit,
                 skip
         );
+    }
+
+    @GetMapping("/ids")
+    public FavoriteIdsResponse getFavoriteIds(
+            @RequestHeader("Authorization")
+            String authHeader
+    ){
+        return favoriteService.getFavoriteIds(authHeader);
     }
 }

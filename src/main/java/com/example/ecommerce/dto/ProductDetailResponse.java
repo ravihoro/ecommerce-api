@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record ProductDetailResponse(
-        Long id,
+        Integer id,
         String title,
         String description,
 
@@ -38,9 +38,6 @@ public record ProductDetailResponse(
 
         List<String> images,
 
-        List<ReviewResponse> reviews,
-
-        boolean isFavorite
-
+        List<ReviewResponse> reviews
 ) {
 }
